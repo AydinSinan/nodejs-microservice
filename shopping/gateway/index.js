@@ -12,6 +12,6 @@ app.use('/product', proxy('http://localhost:8002')) // or use '/' endpoint
 app.use('/shopping', proxy('http://localhost:8003'))
 
 
-app.listen(8004, () => {
-    console.log(`Gateway Service is running in 8004 Port`);
+app.listen(8000, () => {
+    console.log(`Gateway Service is running in 8000 Port`);
 })

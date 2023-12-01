@@ -138,6 +138,7 @@ class CustomerService {
         }
     }
 
+    // communication with other services
     async SubscribeEvents(payload){
  
         const { event, data } =  payload;
@@ -157,6 +158,9 @@ class CustomerService {
                 break;
             case 'CREATE_ORDER':
                 this.ManageOrder(userId,order);
+                break;
+            case 'TESTING':
+                console.log("WORKING... Subscriber");
                 break;
             default:
                 break;
