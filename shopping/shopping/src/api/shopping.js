@@ -42,7 +42,6 @@ module.exports = (app) => {
 
     });
        
-    
     app.get('/shopping/cart', UserAuth, async (req,res,next) => {
 
         const { _id } = req.user;
@@ -53,4 +52,15 @@ module.exports = (app) => {
             next(err);
         }
     });
+
+    app.get('/cart', UserAuth, async (req, res, next) => {
+        
+        const { _id } = req.user;
+        try {     
+            const { data } = await service.GetCart({ _id })
+            return res.status(200).json(data);
+        } catch (error) {
+            throw error;
+        }
+    })
 }

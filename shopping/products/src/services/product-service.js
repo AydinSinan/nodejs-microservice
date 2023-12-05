@@ -83,7 +83,7 @@ class ProductService {
             const payload= {
                 event: event,
                 data: {
-                    userId, productId, qty
+                    userId, product, qty
                 }
             }
             return FormateData(payload)

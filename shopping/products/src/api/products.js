@@ -62,25 +62,23 @@ module.exports = (app) => {
        
     });
      
-    app.put('/wishlist',UserAuth, async (req,res,next) => {
+    app.put('/wishlist', UserAuth, async (req,res,next) => {
 
-        const { _id } = req.user;
-
-        // get payload // to send customer service
-        const { data } = await service.getProductPayload(_id, {productId: req.body._id}, 'ADD_TO_WISHLIST');
-
+        const { _id } = req.user;        
         
         try {
 
-            PublishCustomerEvent(data);
-       
+            // get payload // to send customer service
+            const { data } = await service.getProductPayload(_id, {productId: req.body._id}, 'ADD_TO_WISHLIST');
+
+            PublishCustomerEvent(data.payload); //////////////////////////////////////////////// 
             return res.status(200).json(data.data.product);
         } catch (err) {
-            
+            throw err;
         }
     });
     
-    app.delete('/wishlist/:id',UserAuth, async (req,res,next) => {
+    app.delete('/wishlist/:id', UserAuth, async (req,res,next) => {
 
         const { _id } = req.user;
         const productId = req.params.id;
@@ -97,19 +95,21 @@ module.exports = (app) => {
     });
 
 
-    app.put('/cart',UserAuth, async (req,res,next) => {
+    app.put('/cart', UserAuth, async (req,res,next) => {
         
         const { _id } = req.user;
         
         try {     
+
             const { data } = await service.getProductPayload(_id, { productId: req.body._id, qty: req.body.qty }, 'ADD_TO_CART');
-            PublishCustomerEvent(data)
-            PublishShoppingEvent(data)
+            PublishCustomerEvent(data);
+            PublishShoppingEvent(data);
 
             const response = {
                 product: data.data.product,
-                qty: data.data.qty
+                unit: data.data.qty
             }
+
             return res.status(200).json(response);
             
         } catch (err) {
@@ -117,7 +117,7 @@ module.exports = (app) => {
         }
     });
     
-    app.delete('/cart/:id',UserAuth, async (req,res,next) => {
+    app.delete('/cart/:id', UserAuth, async (req,res,next) => {
 
         const { _id } = req.user;
         const productId = req.params.id;
@@ -130,7 +130,7 @@ module.exports = (app) => {
             
             const response = {
                 product: data.data.product,
-                qty: data.data.qty
+                unit: data.data.qty
             }
             return res.status(200).json(response);
         } catch (err) {
@@ -145,7 +145,7 @@ module.exports = (app) => {
             const { data} = await service.GetProducts();        
             return res.status(200).json(data);
         } catch (error) {
-            next(err)
+            next(error)
         }
         
     });

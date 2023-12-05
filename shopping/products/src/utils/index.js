@@ -17,12 +17,12 @@ module.exports.ValidatePassword = async (
   savedPassword,
   salt
 ) => {
-  return (await this.GeneratePassword(enteredPassword, salt)) === savedPassword;
+  return await this.GeneratePassword(enteredPassword, salt) === savedPassword;
 };
 
 module.exports.GenerateSignature = async (payload) => {
   try {
-    return await jwt.sign(payload, APP_SECRET, { expiresIn: "30d" });
+    return await jwt.sign(payload, APP_SECRET, { expiresIn: "1d" });
   } catch (error) {
     console.log(error);
     return error;
@@ -33,9 +33,12 @@ module.exports.ValidateSignature = async (req) => {
   try {
     const signature = req.get("Authorization");
     console.log(signature);
-    const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET);
-    req.user = payload;
-    return true;
+    if(signature) {
+      const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET);
+      req.user = payload;
+      return true;
+    }
+    return false;
   } catch (error) {
     console.log(error);
     return false;
@@ -50,16 +53,15 @@ module.exports.FormateData = (data) => {
   }
 };
 
-module.exports.PublishCustomerEvent = async (data) => {
+module.exports.PublishCustomerEvent = async (payload) => {
   
   // Perform some operations
   axios.post('http://localhost:8000/customer/app-events', {
     payload
   })
-
 }
 
-module.exports.PublishShoppingEvent = async (data) => {
+module.exports.PublishShoppingEvent = async (payload) => { ///////////////////////////////// data
 
  // Perform some operations
    axios.post('http://localhost:8000/shopping/app-events', {
